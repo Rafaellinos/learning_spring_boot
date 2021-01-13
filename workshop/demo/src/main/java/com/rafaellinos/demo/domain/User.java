@@ -1,13 +1,18 @@
 package com.rafaellinos.demo.domain;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.io.Serializable;
 import java.util.Objects;
 
+@Document(collection = "user") // se não colocar, o spring mapeia de acordo com o nome da classe minuscula
 public class User implements Serializable { // Serializable -> Versão
     private static final long serialVersionUID = 1L;
     // https://howtodoinjava.com/java/serialization/serialversionuid/
     // serialVersionUID what is it
 
+    @Id
     private String id;
     private String name;
     private String email;

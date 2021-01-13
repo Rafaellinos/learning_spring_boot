@@ -1,0 +1,8 @@
+spring.data.mongodb.uri=mongodb://testUser:123@localhost:27017/workshop_mongo -> Em application.properties
+
+docker exec -it mongo-container bash
+mongo -u root
+use <DB_NAME>
+db.createUser({user: "<USE_NAME>", pwd: "<PWD>", roles : [{role: "readWrite", db: "<DB_NAME>"}]});
+
+
