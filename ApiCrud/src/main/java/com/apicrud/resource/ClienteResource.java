@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ClienteResource {
 
-    public List<Cliente> findAll();
+    public List<Cliente> findAll(String nome);
 
     public Cliente findById(Long id);
 

@@ -51,6 +51,15 @@
     - Instrumentation -> 
     - Messaing
 
-## Requitios:
+pom.xml = project object model, coração de um projeto maven
 
-- tomcat
+Content negotiation => header dizendo qual formato espera receber, exemplo:
+application/json, application/xml. 
+
+Flyway => para gerenciar os scripts de migração. Ex: vc cria um arquivo V001__cria-tabela-cliente.sql, nele, vc coloca os arquivos de migração.
+A cada mudança nele, é necessário trocar a versão, para V002 por exemplo, se n 
+o flyway irá subir uma execption de validação. Ou pode-se deleta os registros flyway na tabela.
+
+# Jakarte EE
+* Hibernete é uma implementação do jakarta ee especificação
+* Spring data spa é apenas uma biblioteca q ajuda a interagir com Jakarta ee

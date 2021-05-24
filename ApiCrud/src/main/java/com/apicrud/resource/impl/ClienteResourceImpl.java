@@ -18,20 +18,8 @@ public class ClienteResourceImpl implements ClienteResource {
     private ClienteRepository clienteRepository;
 
     @GetMapping
-    public List<Cliente> findAll() {
-//        Cliente cliente1 = Cliente.builder()
-//                .id(1L)
-//                .nome("Rafael")
-//                .dataNascimento(new Date(1990, Calendar.DECEMBER, 5))
-//                .build();
-//
-//        Cliente cliente2 = Cliente.builder()
-//                .id(2L)
-//                .nome("Yasmin")
-//                .dataNascimento(new Date(1990, Calendar.JUNE, 20))
-//                .build();
-//
-//        List<Cliente> listaClientes = Arrays.asList(cliente1, cliente2);
+    public List<Cliente> findAll(@RequestParam(required = false) String nome) {
+        if (!Objects.isNull(nome)) return clienteRepository.findByNomeIgnoreCaseContaining(nome);
         return clienteRepository.findAll();
     }
 
