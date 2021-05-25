@@ -1,18 +1,20 @@
 package com.apicrud.resource;
 
 import com.apicrud.domain.Cliente;
+import com.apicrud.dto.ClienteRequestDto;
+import com.apicrud.dto.ClienteResponseDto;
 
 import java.util.List;
 
 public interface ClienteResource {
 
-    public List<Cliente> findAll(String nome);
+    public List<ClienteResponseDto> findAll(String nome);
 
-    public Cliente findById(Long id);
+    public ClienteResponseDto findById(Long id);
 
-    public Cliente create(Cliente cliente);
+    public ClienteResponseDto create(ClienteRequestDto cliente);
 
-    public Cliente update(Cliente novoCliente, Long id);
+    public ClienteResponseDto update(ClienteRequestDto novoCliente, Long id);
 
     public void delete(Long id);
 }

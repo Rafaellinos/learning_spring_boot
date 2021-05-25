@@ -24,6 +24,12 @@ public class Cliente implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dataNascimento;
 
+    @Column
+    private String email;
+
+    @Column
+    private String password;
+
     public Cliente() {
         super();
     }
@@ -34,11 +40,20 @@ public class Cliente implements Serializable {
         this.nome = nome;
     }
 
-    public Cliente(Long id, String nome, Date dataNascimento) {
+    public Cliente(Long id, String nome, Date dataNascimento, String email, String password) {
         super();
         this.id = id;
         this.nome = nome;
         this.dataNascimento = dataNascimento;
+        this.email = email;
+        this.password = password;
     }
+
+    /*
+        adicionar swagger para doc. das apis
+            - adicioanr dependencias spring swagger (2)
+            - Swagger configuration em config
+            - custumer resource interface -> como utilizar swagger
+     */
 
 }
