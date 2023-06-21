@@ -167,3 +167,32 @@ management.endpoints.web.exposure.include=health,info or *
 
 - java -jar | mvn package && java -jar mycoolapp.jar
 - mvn spring-boot:run | must have maven plugin
+
+# Spring custom application properties
+
+- @value to access spring properties
+
+# Spring boot server
+
+- groups of properties available: 
+- core
+  - logging based on package name
+    - logging.level.org.hibernate=TRACE
+    - logging.level.org.springframework=DEBUG
+  - log file output
+    - logging.file.name=log_crazy.log
+    - logging.file.path=/home/log_folder
+- web
+  - server:
+    - server.port=7070
+    - server.servlet.context-path=/my-silly-app # on browser: localhost:7070/my-silly-app
+    - server.servlet.session.timeout=15m # default 30min
+- security
+  - spring.security.user.name=admin && .user.password=123
+- data
+  - spring.datasource.url=jdbc:mysql...
+- devtools, 
+- actuator
+  - web.exposure.include/exclude
+  - web.base-path=actuator # /actuator/health
+- integration, testing
