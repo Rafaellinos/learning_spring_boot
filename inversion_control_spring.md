@@ -80,3 +80,86 @@ class Client {
 
 - recommend flow:
   - interface -> implementation with @Component -> @Autowired in constructor client
+
+# Spring main entrypoint
+
+- Spring will scan for classes with special annotations, such as @Component, @Service, etc
+- Managed by spring container
+- on the main entrypoint of the java application, we have @SpringBootApplication
+  - Auto Configuration @EnableAutoConfiguration
+  - Component Scanning @ComponentScan (Scan main package e.g.: com.example.springtest recursive)
+    - spring will not scan other packages like com.example.anotherpackage
+    - to use other packages, list explicit @SpringBootApplication(scanBasePackages={"all packages..."})
+  - Additional configuration @Configuration (register extra @Beans or import other config classes)
+- SpringApplication.run(self.class, args) -> bootstrap spring boot app
+  - create app context and register all beans
+  - starts embedded server tomcat
+
+# Setter injection
+
+- used in set<Something> like @Autowired setCoach(Coach theCoach) {...}
+
+# @Component vs @Service vs @Repository
+
+- @Component
+  - mark the class as a bean for spring to manage
+  - registered in ApplicationContext
+- @Service
+  - Mark as business logic
+  - registered in ApplicationContext
+  - specialization of @Component
+- @Repository
+  - used to mark as a persistent layer class
+  - used to catch persistence exceptions
+
+# Field injection
+
+- not recommended
+- make hard to unittest
+- even for private fields by using reflections
+- e.g.:
+
+```java
+@RestController
+class Controller {
+    
+    @Autowired
+    private Coach myCoach; // <- field injection
+    // no constructor and no setters
+    
+    @GetMapping("/hello")
+    public String getHello() {
+        return myCoach.getSomeString();
+    }
+}
+```
+
+
+# Qualifiers
+
+- useful for multi interface implementation
+- use @Component("qualifierName") || or use @Qualifier with class name lowercase camel
+- Constructor autowired:
+  - public String someMethod(@Qualifier("qualifierName") Coach coach)
+  - or use variable with same name: someMethod(Coach qualifierName)
+- SetterField
+  - use @Qualifier("qualifierName") as a "wrapper" for the setField method
+
+# Primary annotation
+
+- @Primary for a @Component class, this class will be chosen as a primary option for injection
+- no need to use @Qualifier
+- only one for multiple implementation
+- @Qualifier has higher priority
+
+
+# Lazy initialization
+
+- @Lazy
+- by default, when app starts, all beans are initialized
+- spring create an instance of each one of them
+- When marked as lazy initialization only init if:
+  - needed for dependency injection
+  - explicit requested
+- to set all the bean as lazy, use spring.main.lazy-initialization=true on properties
+- Disadvantages: @RestController is not created until requested, may generate timeout
