@@ -162,4 +162,71 @@ class Controller {
   - needed for dependency injection
   - explicit requested
 - to set all the bean as lazy, use spring.main.lazy-initialization=true on properties
-- Disadvantages: @RestController is not created until requested, may generate timeout
+- Disadvantages: @RestController is not created until requested, may generate 
+- mark both CLASS and FIELD as lazy to get the proper effect
+
+# Bean Scope
+
+- Lifecycle of a bean
+- how many instances are created
+- how long does the instance live?
+- how is the bean shared?
+
+- default scope is singleton
+  - one instance created and cached
+  - all injections for the bean will be the SAME
+- Can explicitly specify the bean scope:
+  - @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+- Types of Scopes:
+  - Singleton (Default) - one instance is shared
+    - Prototype - create new bean instance for each request + more space in memory
+      - @Lazy by default
+      - no destroy method
+  - Request - Scope to a http request, only for web apps
+  - Session - Tied to a http web session
+  - global-session - Web apps
+
+
+# Bean lifecycle
+
+- flow:
+  - Container Started -> Bean instantiated -> Dependencies injected -> Spring internal process -> Custom init method
+  - Container is shutdown -> Destroy method
+- Custom init method: @PostConstruct
+  - business logic
+  - setting up handles to resources (db, sockets, file, etc)
+- bean destruction: @PreDestroy
+  - business logic
+  - clean up handles resources (db, sockets, file, etc)
+
+# Bean config bean
+
+- @Configuration for a config 
+- @Bean in method to return the bean (manually construct the object)
+- useful for make a 3rd party available to spring (inject some class outside ur code)
+
+## E.g.:
+
+
+```java
+@Configuration
+public class AwsConfigDoc {
+    @Bean
+    public S3Client getS3Client() {
+        // build the s3 Clint with AWS SDK
+        return s3Client;
+    }
+}
+```
+
+```java
+@Component
+public class SomeServiceClass {
+    private S3Client s3Client;
+    
+    @Autowired
+    public getS3Client(S3Client theS3Client) {
+        this.s3Client = theS3Client;
+    }
+}
+```
