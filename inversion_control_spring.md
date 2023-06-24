@@ -204,6 +204,7 @@ class Controller {
 - @Configuration for a config 
 - @Bean in method to return the bean (manually construct the object)
 - useful for make a 3rd party available to spring (inject some class outside ur code)
+- @Bean("customNameForQualifier") possible to define custom name for bean
 
 ## E.g.:
 
