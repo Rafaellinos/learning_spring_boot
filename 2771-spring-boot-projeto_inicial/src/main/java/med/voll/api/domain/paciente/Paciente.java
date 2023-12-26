@@ -17,7 +17,9 @@ public class Paciente {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nome;
+
     private String email;
 
     private String telefone;
@@ -48,7 +50,6 @@ public class Paciente {
         if (dados.endereco() != null) {
             this.endereco.atualizarInformacoes(dados.endereco());
         }
-
     }
 
     public void excluir() {
