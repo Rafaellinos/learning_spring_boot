@@ -196,3 +196,145 @@ management.endpoints.web.exposure.include=health,info or *
   - web.exposure.include/exclude
   - web.base-path=actuator # /actuator/health
 - integration, testing
+
+# Algaworks spring curso
+
+## Spring vs Jakarta EE (java ee)
+
+- Jakarta está no eclipse foundation
+  - Java EE == Jakarta EE   
+    - baseado em padronizações
+    - JPA é uma especificação que ta dentro do Java EE
+    - hibernate implementa a especificação do JPA
+- Spring plataforma, inovação, avança mais rapido que J-EE
+  - JEE ou spring?
+    - pode usar os dois ao mesmo tempo
+    - como JPA com spring
+    - CDI (J-EE) vs spring framework
+    - spring 3 == configuração programática
+    - simplificar. convention over configuration, optinativo
+    - starters spring == agrupadores de dependencias
+    - spring boot vs spring MVC?
+      - spring boot camada encima do spring
+      - spring mvc:
+        - servlet. web. @Controller, @GetMapping
+      - spring boot:
+        - convention over configuration, auto configuração, pré definições.
+        - tomcat, starters
+
+## beans
+
+- beans @component => @configuration, @controller, @restController
+- @Bean em metodo retorna bean construido
+- método @Bean pode usar um metodo da mesma classe que retorna um bean.
+  - ex: @Bean public ClasseXY criaClasseXY() {return new ClasseXY();} 
+  - ex cont: @Bean public ClasseXX criaclasseXX() {return new ClasseXX(criaClasseXY());}
+  - ou receber o bean como parametro
+
+## custom annotation
+
+- @Retention(RetentionPolicy.RUNTIME) == pra anotacao
+- public @interface
+- pode ser usar custom anotação usando @Qualifier e enum
+
+## profiles
+
+- @Profile("prod") etc
+- ative via properties spring.profiles.active=prod
+- parametro ao iniciar o spring
+- pode-se ativar varios profiles = profiles.active=mysql,prod,http....
+
+## ciclo de vida dos beans
+
+- metodo = qualquer void com anotações
+- @PostConstruct = javaee, depois do construtor
+- @PreDestroy = javaee, antes de destruir
+  - quando para a aplicação
+- ou via @Configuration @Bean(initMethod= "methodNameInit", destroyMethod = "methodNameDestroy")
+- ou implementando a interface InitializingBean/DesposableBean e o metodo afterPropertiesSet()
+
+## Observer pattern no spring
+
+- tratar eventos quando algo acontecer
+- criar classe de evento e usar ApplicationEventPublisher.publishEvent(new ClasseEvento())
+- criar classe litener = recebe o evento (ClasseEvent), usar @EventListener
+
+ex:
+
+```java
+@Data
+public class Cliente {
+    private String name;
+    private boolean isActive;
+}
+
+@Getter
+public class ClienteAtivoEvento {
+  private Cliente cliente;  
+  public ClienteAtivoEvento(Cliente cliente) {
+    this.cliente = cliente;
+  }
+}
+
+@Component
+public class NotificacaoService {
+    @EventListener
+    public void clienteAtivadoLiterner(ClienteAtivoEvento evento) {
+        // fazer algo quando o cliente foi criado....
+      System.out.println("enviando email de boas vindas...");
+    }
+}
+
+@Service
+public class CreateCliente {
+  
+    @Autowired
+    private ApplicationEventPublisher eventPublisher; // spring
+  
+    public void createClient(String nome, Cliente cliente) {
+        var c = new Cliente();
+        c.setIsActive(true);
+        c.setName(nome);
+        eventPublisher.publishEvent(new ClienteAtivoEvento(cliente));
+    }
+}
+
+```
+
+## application.properties
+
+- arquivo de configuracao
+- padrao eh application.properties, chave e valor
+  - pode-se usar yml
+- ex. server.port=8080
+- eh possivel sobrescrever via linha de comando
+  - ex. java -jar ./target/app-spring.jar --server.port=8082
+  - spring: mvn spring-boot:run -Dserver.port 8082
+  - via variavel de ambiente SERVER_PORT=8082
+
+- custom properties:
+  - no application.properties, coloque = propriedade.subpropriedade.valor=qualquer_string
+  - use @Value("${propriedade.subpropriedade.valor}") String valor
+  - pode-se criar classe de propriedade
+
+ex:
+```java
+@Component
+@ConfigurationProperties("propriedade.subpropriedade")
+@Getter
+@Setter
+public class Properties {
+    private String valor;
+}
+// adicione spring-boot-configuration-processor para IDE identificar classe e gerar no jar
+```
+
+- ambientes em profiles
+  - crie application-local.properties, application-dev.properties, etc
+  - env = SPRING_PROFILES_ACTIVE=dev
+
+## Maven
+
+- mvn dependency:tree ou :resolve = arvore de dependencias
+- mvn help:effective-pom = pom completo
+ 
