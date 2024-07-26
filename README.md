@@ -318,6 +318,7 @@ public class CreateCliente {
   - pode-se criar classe de propriedade
 
 ex:
+
 ```java
 @Component
 @ConfigurationProperties("propriedade.subpropriedade")
@@ -337,4 +338,64 @@ public class Properties {
 
 - mvn dependency:tree ou :resolve = arvore de dependencias
 - mvn help:effective-pom = pom completo
- 
+
+## JPA e Hibernate
+
+- tradicional: Codigo java -> driver jdbc -> mysql
+- ORM -> mapeamento de classes
+  - ORM: Codigo java -> ORM -> driver jdbc -> mysql 
+  - tabela -> classe
+  - linha -> objeto instancia
+  - coluna -> atributo/campos
+  - FK -> campo de outra classe
+
+- JPA = Java EE/Jakarta EE = especificação
+- hibernate implementa JPA
+
+- config pom.xml
+  - starter = spring data jpa + spring data jpa
+  - adicionar connection com banco de dados
+  - spring.datasource.url=jdbc:mysql://localhost:3603/schema?createDatabaseIfNotExist=true&serverTimezone=UTC
+  - spring.datasource.username e passaword
+  - adicionar jar do driver especifico
+  - spring.jpa.show-sql=true = mostra as queries sendo feitas no log
+
+- codigo
+  - @PersistenceContext private EntityManager manager -> manager.createQuery("from table", TableClass.class); -return > TypedQuery<TableClass>
+  - @Transactional public SomeClass add(SomeClasss someClass) {manager.merge(cozinha)} // usar @Transactional
+  - EntityManager -> find, merge(se passar id, atualiza), remove e createQuery
+    - para remove, precisa dar find primeiro, pois, o objeto precisa estar em estado "managed", sem isso n será possivel remover
+
+- Aggregate DDD
+  - Aggregate eh padrao do DDD
+  - Eh um conjunto de objetos de dominio que podem se tratar de uma mesma unidade de dominio
+   - ex: Pedido aggregate == Pedido domain(Aggregate root), ItemPedidoDomain e StatusPedidoDomain
+   - quando referencia de fora do aggregate, sempre referenciar ao root
+
+- Repository DDD
+  - interface de abstração de acesso a dados
+  - pensa em negocio, oq um repositorio de cozinha deveria permitir?
+  - como se fosse uma coleção desse domain, como: "preciso de uma cozinha -> metodo get()"
+  - geralmente, n se faz repository para dominios que n sejam root
+
+
+- many to one
+  - @ManyToOne classe atual (eh o many) e o campo é o one
+  - ex. class ClasseXX { @ManyToOne private ClasseXY classeXY; } -> Cada ClasseXY, tem varias ClasseXX
+  - joinColumn quando for manytoOne legado
+
+>> Padrao eh nullable, se for especificar calunas que n podem ser num, use o atributo `@Column(nullable=fase)`
+
+## Spring via terminal
+
+```java
+public class main {
+
+  public static void main(String[] args) {
+    // ClassConfigured has @SpringBootApplication
+    ApplicatonContext applicatonContext = new SpringApplicationBuilder(ClassConfigured.class)
+            .web(WebApplicationType.NONE).run(args);
+    SomeBeanClass someBeanClass = applicatonContext.getBean(SomeBeanClass.class);
+  }
+}
+```
