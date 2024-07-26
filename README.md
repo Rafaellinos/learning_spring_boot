@@ -399,3 +399,19 @@ public class main {
   }
 }
 ```
+
+
+## Spring Rest
+
+
+- Rest = Representational state transfer
+- API / modelo arquitetural, especificação para web services
+- Client servidor / Stateless / pode cache
+- Mais comum eh usar http para o REST
+
+- Restful = API em conformidade 100% com REST
+- para recursos, usar plural. ex: produtos/{codigo do produto}
+
+- @Controller e @ResponseBody == @RestController
+
+parei: 4.10
