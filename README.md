@@ -233,9 +233,9 @@ management.endpoints.web.exposure.include=health,info or *
 
 ## custom annotation
 
-- @Retention(RetentionPolicy.RUNTIME) == pra anotacao
+- `@Retention(RetentionPolicy.RUNTIME)` == pra anotacao
 - public @interface
-- pode ser usar custom anotação usando @Qualifier e enum
+- pode ser usar custom anotação usando `@Qualifier` e enum
 
 ## profiles
 
@@ -252,6 +252,7 @@ management.endpoints.web.exposure.include=health,info or *
   - quando para a aplicação
 - ou via @Configuration @Bean(initMethod= "methodNameInit", destroyMethod = "methodNameDestroy")
 - ou implementando a interface InitializingBean/DesposableBean e o metodo afterPropertiesSet()
+- `BeanUtils.copyProperties(object1, object2, "id")` para passar dados do objeto2 ao objeto1. o "id" será ignorado nesse map
 
 ## Observer pattern no spring
 
@@ -361,10 +362,34 @@ public class Properties {
   - spring.jpa.show-sql=true = mostra as queries sendo feitas no log
 
 - codigo
-  - @PersistenceContext private EntityManager manager -> manager.createQuery("from table", TableClass.class); -return > TypedQuery<TableClass>
+  - `@PersistenceContext private EntityManager manager` -> manager.createQuery("from table", TableClass.class); -return > TypedQuery<TableClass>
   - @Transactional public SomeClass add(SomeClasss someClass) {manager.merge(cozinha)} // usar @Transactional
   - EntityManager -> find, merge(se passar id, atualiza), remove e createQuery
     - para remove, precisa dar find primeiro, pois, o objeto precisa estar em estado "managed", sem isso n será possivel remover
+  - `@Repository` = `@Component` + adiciona tbm tradutor de exceptions da SQL para exceptions do spring
+
+- JPQL - Java Persistence Query Language
+  - definido por J-EE, semelhante ao SQL, porém mais orientado a objetos
+  - ex: `manager.createQuery("from TableName where columnName like :name", ClassTable.class).setParameter("name", "%" + variable + "%")`
+
+- SDJ - Spring Data Jpa
+  - repositório genérico. Facilita implementação de repos JPA
+  - via interface com métodos comuns gerados em runtime, como `findAll()`
+    - use `@Repository` e `extends JpaRepository<EntityClass, Long>`
+    - `JpaRepository` herda de `PagingAndSorting` e `CrudRepository`, que oferecem métodos comuns
+    - incluido em spring-boot-starter-jpa
+    - para consultar por algum atributo, use o nome do método com o nome do atributo/campo
+      - ex: `Object name(String name);` obter por nome
+      - ex2: `Object findBy(String name)` ou `Object findByName(String name)`
+    - métodos podem retornar `Optional` para evitar nullPointers
+    - prefixos comuns:
+      * buscar = get, query, find, read, stream, findFirst, findLast, findTop10
+      * verificar = `exists` retorna boolean 
+      * contar = countBy
+    - sufixos comuns:
+      * like/ilike = Contains/ConstainsIgnoreCase
+      * between = range de datas, Long, Int, etc. Dois argumentos
+      * And = combinar operaçoes
 
 - Aggregate DDD
   - Aggregate eh padrao do DDD
@@ -377,7 +402,6 @@ public class Properties {
   - pensa em negocio, oq um repositorio de cozinha deveria permitir?
   - como se fosse uma coleção desse domain, como: "preciso de uma cozinha -> metodo get()"
   - geralmente, n se faz repository para dominios que n sejam root
-
 
 - many to one
   - @ManyToOne classe atual (eh o many) e o campo é o one
@@ -400,9 +424,7 @@ public class main {
 }
 ```
 
-
 ## Spring Rest
-
 
 - Rest = Representational state transfer
 - API / modelo arquitetural, especificação para web services
@@ -412,6 +434,33 @@ public class main {
 - Restful = API em conformidade 100% com REST
 - para recursos, usar plural. ex: produtos/{codigo do produto}
 
-- @Controller e @ResponseBody == @RestController
+- Annotations
+  * `@Controller` e `@ResponseBody` == `@RestController`
+  * `@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)`
+  * `@RequestMapping` tbm aceita produces para controller inteira
+  * `@PatchMapping` use `Map<String, Object>` para obter campos que foram setados e evitar receber o dto inteiro
+  * findField de `ReflectionUtils.findField` e depois `Field.setField` para setar atributos dinamicamente
 
-parei: 4.10
+- jackson
+  * `@JsonProperty(value = "titulo")` para representar campo no json
+  * `@JsonIgnore` remover campo do parse
+  * `@JsonRootName("classeNome")` nome da propriedade na tag xml da classe
+
+- `ResponseEntity<T>` alternativa do retorno dos métodos da controller para ter builder
+  - ex: `return ResponseEntity.status(HttpStatus.OK).body(variavel);`
+  - ex2: `return ResponseEntity.ok(variavel);` ou `return ResponseEntity.notFound();`
+
+- Modelo de maturidade de Richardson
+  * nivel 0 (nao rest)
+    - POX - plain old XML
+    - http só para transporte, não usa semantica http ou status
+    - geralmente, unica url pra tudo
+  * nivel 1 (Recursos)
+    - Varias urls, como /pessoas, /cidades
+  * nivel 2 (Verbos http)
+    - semantica http e codigos de retorno (200, 404, etc)
+  * nivel 3 (HATEOAS)
+    - links para subobjetos e recursos
+    - json ex: `{outros..., "links": ["fornecedor": "/fornecedores/123"]}`
+
+parei: 5.8

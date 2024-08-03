@@ -5,7 +5,6 @@ import br.com.rafaellino.algaworkscurso.domain.model.Kitchen;
 import br.com.rafaellino.algaworkscurso.domain.model.Person;
 import br.com.rafaellino.algaworkscurso.domain.model.Restaurant;
 import br.com.rafaellino.algaworkscurso.domain.repository.KitchenRepository;
-import br.com.rafaellino.algaworkscurso.domain.repository.PersonRepository;
 import br.com.rafaellino.algaworkscurso.domain.repository.RestaurantRepository;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
