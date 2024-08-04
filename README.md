@@ -371,6 +371,7 @@ public class Properties {
 - JPQL - Java Persistence Query Language
   - definido por J-EE, semelhante ao SQL, porém mais orientado a objetos
   - ex: `manager.createQuery("from TableName where columnName like :name", ClassTable.class).setParameter("name", "%" + variable + "%")`
+  - Pode se fazer mapeamento de queries com xml em META-INF/orm.xml ao invés de usar `@Query`
 
 - SDJ - Spring Data Jpa
   - repositório genérico. Facilita implementação de repos JPA
@@ -390,6 +391,12 @@ public class Properties {
       * like/ilike = Contains/ConstainsIgnoreCase
       * between = range de datas, Long, Int, etc. Dois argumentos
       * And = combinar operaçoes
+  - `@Query("from TableName where columnName like %:variableParam% and tableName.id = :id")`
+    * Pode se manter o nome do parametro igual ou `@Param("ColumnName") Long id`
+  - É possível fazer um custom repository colocando o sufixo de Impl. use `EntityManager` pra isso.
+    * N é necessário implementar a interface, SDJ ira juntar os dois mesmo que o Impl n tenha tds métodos implementados
+  - Criteria API = para queries complexas usando codigo java.
+    * 
 
 - Aggregate DDD
   - Aggregate eh padrao do DDD
