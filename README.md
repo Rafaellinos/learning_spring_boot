@@ -253,6 +253,8 @@ management.endpoints.web.exposure.include=health,info or *
 - ou via @Configuration @Bean(initMethod= "methodNameInit", destroyMethod = "methodNameDestroy")
 - ou implementando a interface InitializingBean/DesposableBean e o metodo afterPropertiesSet()
 - `BeanUtils.copyProperties(object1, object2, "id")` para passar dados do objeto2 ao objeto1. o "id" será ignorado nesse map
+- `@Lazy` só instancia quando necessário e nao quando app sobe
+  * util quando temos dependencia circular
 
 ## Observer pattern no spring
 
@@ -371,7 +373,7 @@ public class Properties {
 - JPQL - Java Persistence Query Language
   - definido por J-EE, semelhante ao SQL, porém mais orientado a objetos
   - ex: `manager.createQuery("from TableName where columnName like :name", ClassTable.class).setParameter("name", "%" + variable + "%")`
-  - Pode se fazer mapeamento de queries com xml em META-INF/orm.xml ao invés de usar `@Query`
+  - Pode-se fazer mapeamento de queries com xml em META-INF/orm.xml ao invés de usar `@Query`
 
 - SDJ - Spring Data Jpa
   - repositório genérico. Facilita implementação de repos JPA
@@ -395,8 +397,18 @@ public class Properties {
     * Pode se manter o nome do parametro igual ou `@Param("ColumnName") Long id`
   - É possível fazer um custom repository colocando o sufixo de Impl. use `EntityManager` pra isso.
     * N é necessário implementar a interface, SDJ ira juntar os dois mesmo que o Impl n tenha tds métodos implementados
+    * É possível fazer mixin das interfaces, como a interface do `@Repository` e outra com apenas uma interface/metodo implementado pela custom Impl
   - Criteria API = para queries complexas usando codigo java.
-    * 
+    * Use `CriteriaBuilder` para gerar `CriteriaQuery<T>`
+    * Tem group(), where(), from(), like(), greaterThanOrEqualTo(), etc
+  - Specifications (DDD) em SDJ
+    * Classes que representam um filtro ex: `new EntityWithSomeFilterPropertySpec()`
+    * use `implements Specification<T>` e implementar o método `T toPredicated(...criteria.Root, CriteriaQuery<?> query, CretieriaBuilder builder){}`
+    * pode-se juntar especificacoes com `Specification<?>.and(anotherSpecification)`
+  - `@NoRepositoryBean` para customizar `JpaRepository<T, ID>` base
+    * Na Impl, extenda de `SimpleJpaRepository<T, ID>`
+    * Implemente o método custom e faça composição das interfaces
+    * no main, use a annotation `@EnableJpaRepositories(repositoryBaseClass = CustomJpaRepositoryImpl.class)`
 
 - Aggregate DDD
   - Aggregate eh padrao do DDD
@@ -470,4 +482,4 @@ public class main {
     - links para subobjetos e recursos
     - json ex: `{outros..., "links": ["fornecedor": "/fornecedores/123"]}`
 
-parei: 5.8
+parei: 5.20
