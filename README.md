@@ -422,10 +422,20 @@ public class Properties {
   - como se fosse uma coleção desse domain, como: "preciso de uma cozinha -> metodo get()"
   - geralmente, n se faz repository para dominios que n sejam root
 
-- many to one
-  - @ManyToOne classe atual (eh o many) e o campo é o one
-  - ex. class ClasseXX { @ManyToOne private ClasseXY classeXY; } -> Cada ClasseXY, tem varias ClasseXX
-  - joinColumn quando for manytoOne legado
+- Relacionamentos/Cardinais
+  * Many to one 
+    - `@ManyToOne` classe atual (eh o many) e o campo é o one
+    - ex. `public class ClasseXX { @ManyToOne private ClasseXY classeXY; }`
+    - Cada ClasseXY, tem varias ClasseXX
+    - joinColumn quando for manytoOne legado
+  * One to many
+    - `@OneToMany(mappedBy = "tableNameClasseXX")` classe atual (one) e o campo é o muitos
+    - ex. `public class Classe XY { @OneToMany private List<ClasseXX> classeXXs; }` 
+    - :warning: caso houver mapeamento circular, use `@JsonIgnore` de jackson
+  * Many to many
+    - `@ManyToMany(name="tableManyToManyName", joinColumn = @JoinColumn(name="id_entidade_que_estamos"))`
+    - `joinColumn = @JoinColumn(name="id_entidade_que_estamos")` esse trecho serve pra especificar qual ID na tabela de many2many é da classe atual
+    - `inverseJoinColumns = @JoinColumn(name="id_entidade_relacionamento")` aponta para qual id do relacionamento, ou seja, da outra classe que estamos referenciando
 
 >> Padrao eh nullable, se for especificar calunas que n podem ser num, use o atributo `@Column(nullable=fase)`
 
@@ -482,4 +492,4 @@ public class main {
     - links para subobjetos e recursos
     - json ex: `{outros..., "links": ["fornecedor": "/fornecedores/123"]}`
 
-parei: 5.20
+parei: 6.2
