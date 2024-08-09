@@ -437,6 +437,9 @@ public class Properties {
     - `joinColumn = @JoinColumn(name="id_entidade_que_estamos")` esse trecho serve pra especificar qual ID na tabela de many2many é da classe atual
     - `inverseJoinColumns = @JoinColumn(name="id_entidade_relacionamento")` aponta para qual id do relacionamento, ou seja, da outra classe que estamos referenciando
 
+- `@Emdeddable` -> value object, sera usado em outro tabela mas mapeado na classe anotada
+- `@Embedded` -> na classe target, coloque o field com referencia a classe de value object e a annotation de embedded
+
 >> Padrao eh nullable, se for especificar calunas que n podem ser num, use o atributo `@Column(nullable=fase)`
 
 ## Spring via terminal
